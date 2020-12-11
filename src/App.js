@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [catUrl, setCatUrl] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const data = await fetch("https://api.thecatapi.com/v1/images/search");
+    const json = await data.json();
+
+    setCatUrl(json[0].url);
+    setLoading(false);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={fetchData}>Nueva imagen</button>
+      <br />
+      {loading ? <p>Cargando</p> : <img className="catImg" src={catUrl} />}
     </div>
   );
 }
